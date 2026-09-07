@@ -101,7 +101,12 @@ if result:
         for title, key in [("🟢 Keep Going", "keep_going"), ("🟡 Good", "good"), ("🔵 Best", "best")]:
             st.subheader(title)
             for item in x[key]:
-                st.write("• " + item)
+                # Safely handle if the model returns a dict instead of a plain string
+                if isinstance(item, dict):
+                    item_text = item.get("text") or item.get("activity") or str(item)
+                else:
+                    item_text = str(item)
+                st.write("• " + item_text)
 
     with tabs[4]:
         x = result["next_week_plan"]

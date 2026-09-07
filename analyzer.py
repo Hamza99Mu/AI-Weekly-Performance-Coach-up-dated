@@ -82,6 +82,7 @@ def analyze_week(weekly_text: str, goals_text: str = "", api_key: Optional[str] 
     response = client.chat.completions.create(
         model=model,
         temperature=0.2,
+        max_tokens=4096,
         response_format={"type": "json_object"},
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},

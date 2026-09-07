@@ -1,3 +1,9 @@
+def _safe_item(item):
+    if isinstance(item, dict):
+        return item.get("text") or item.get("description") or item.get("activity") or str(item)
+    return str(item)
+
+
 import json
 import streamlit as st
 from analyzer import analyze_week, extract_docx_text
@@ -108,24 +114,24 @@ if result:
                     item_text = str(item)
                 st.write("• " + item_text)
 
-    with tabs[4]:
+   with tabs[4]:
         x = result["next_week_plan"]
         st.subheader("🎯 Top 3 Priorities")
         for i, item in enumerate(x["top_priorities"], 1):
-            st.write(f"**{i}.** {item}")
+            st.write(f"**{i}.** {_safe_item(item)}")
         st.subheader("⏰ Suggested Time Allocation")
         for item in x["time_allocation"]:
-            st.write("• " + item)
+            st.write("• " + _safe_item(item))
         a, b = st.columns(2)
         with a:
             st.subheader("🔄 Keep")
             for item in x["keep"]:
-                st.write("• " + item)
+                st.write("• " + _safe_item(item))
         with b:
             st.subheader("🚫 Reduce")
             for item in x["reduce"]:
-                st.write("• " + item)
-        st.success(x["one_most_important_change"])
+                st.write("• " + _safe_item(item))
+        st.success(_safe_item(x["one_most_important_change"]))
 
     with tabs[5]:
         x = result["final_result"]
@@ -136,7 +142,7 @@ if result:
         st.write(f'**Potential time recovery:** {x["potential_time_recovery_hours"]:.1f} hours')
         st.subheader("Next week's 3 actions")
         for i, item in enumerate(x["next_week_actions"], 1):
-            st.write(f"**{i}.** {item}")
+            st.write(f"**{i}.** {_safe_item(item)}")
         with st.expander("View structured JSON"):
             st.json(result)
             st.download_button(
